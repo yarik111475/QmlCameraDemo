@@ -12,11 +12,20 @@ ApplicationWindow {
     header: Rectangle{
         id: headerRect;
         width: parent.width;
-        height: 60;
+        height: 50;
+        color: "gray";
+        Text{
+            color: "white";
+            anchors.centerIn: parent;
+            renderType: Text.NativeRendering;
+            font.pointSize: 20;
+            horizontalAlignment: Text.AlignHCenter;
+            text: "Qml Camera Demo";
+        }
     }
 
     Camera{
-        id: sourceCamera;
+        id: sourceCamera;    
         imageProcessing.whiteBalanceMode: CameraImageProcessing.WhiteBalanceAuto;
         captureMode: Camera.CaptureStillImage;
         exposure {
@@ -26,7 +35,8 @@ ApplicationWindow {
         imageCapture{
             onImageCaptured: {
                 //here we can access image using 'preview' parameter
-                console.log("camera image captured...");
+                //console.log("camera image captured...");
+                ImageHandler.slotSetImage(preview);
             }
         }
 
@@ -36,12 +46,14 @@ ApplicationWindow {
         anchors.margins: 10;
         implicitWidth: videoOut.width+videoOut.anchors.margins*2;
         implicitHeight: videoOut.height+videoOut.anchors.margins*2;
+        color: "steelblue";
         border{
             width: 1;
             color: "black";
         }
         VideoOutput{
             id: videoOut;
+            visible: false;
             anchors.fill: parent;
             anchors.margins: 10;
             source: sourceCamera;
@@ -52,7 +64,8 @@ ApplicationWindow {
     footer: Rectangle{
         id: footerRect;
         width: parent.width;
-        height: 60;
+        height: 50;
+        color: "gray";
 
         Row{
             anchors.centerIn: parent;
@@ -64,6 +77,7 @@ ApplicationWindow {
                 onClicked: {
                     sourceCamera.start();
                     captureTimer.start();
+                    videoOut.visible=true;
                 }
             }
             Button{
@@ -72,6 +86,7 @@ ApplicationWindow {
                 onClicked: {
                     sourceCamera.stop();
                     captureTimer.stop();
+                    videoOut.visible=false;
                 }
             }
             Button{
